@@ -10,9 +10,9 @@ class MoviesController < ApplicationController
       @all_ratings = Movie.all_ratings
       ratings = @all_ratings
       if params['ratings']
-        @ratings_to_show = params['ratings'].keys
-        ratings = @ratings_to_show
+        ratings = params['ratings'].keys
       end
+      @ratings_to_show = ratings
       @movies = Movie.with_ratings(ratings)
     end
   
