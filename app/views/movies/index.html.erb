@@ -9,6 +9,7 @@
     <div class="form-check  form-check-inline">
       <%= label_tag "ratings[#{rating}]", rating, class: 'form-check-label' %>
       <%= check_box_tag "ratings[#{rating}]", "1", @ratings_to_show.include?(rating), class: 'form-check-input' %>
+      <%= hidden_field_tag :sort, params[:sort]%>
     </div>
   <% end %>
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
@@ -18,9 +19,9 @@
   <thead>
     <tr>
     <!-- params.merge open up to xss -->
-      <th class="<%= @title_header %>"><%= link_to 'Movie Title', params.merge({:sort => 'title'}), id: 'title_header' %></th>
+      <th class="<%= @title_header %>"><%= link_to 'Movie Title', movies_path({:sort => 'title', :ratings => Hash[@ratings_to_show.map {|r| [r, '1']}]}), id: 'title_header' %></th>
       <th>Rating</th>
-      <th class="<%= @release_date_header %>"><%= link_to 'Release Date', params.merge(:sort => 'release_date'), id: 'release_date_header' %></th>
+      <th class="<%= @release_date_header %>"><%= link_to 'Release Date', movies_path({:sort => 'release_date', :ratings => Hash[@ratings_to_show.map {|r| [r, '1']}]}), id: 'release_date_header' %></th>
       <th>More Info</th>
     </tr>
   </thead>
