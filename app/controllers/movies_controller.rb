@@ -7,25 +7,38 @@ class MoviesController < ApplicationController
     end
   
     def index
+      #byebug
+      # Get possible ratings
       @all_ratings = Movie.all_ratings
       ratings = @all_ratings
+      # Get ratings filter from session
+      if session[:ratings]
+        ratings = session[:ratings].keys
+      end
+      # Get ratings from request
       if params['ratings']
         ratings = params['ratings'].keys
-        #session[:ratings == params[:ratings]]
+        session[:ratings] = params[:ratings]
       end
       @ratings_to_show = ratings
       @movies = Movie.with_ratings(ratings)
 
+      # Sorting and styling
       style = 'bg-warning hilite'
-      case params[:sort]
+      if (!params[:sort]) && session[:sort]
+        @sort_on = session[:sort]
+      end
+      if params[:sort]
+        @sort_on = params[:sort]
+        session[:sort] = params[:sort]
+      end
+      case @sort_on
       when 'title'
         @title_header = style
         @movies = @movies.order('title ASC')
-        #session[:sort] = 'title'
       when 'release_date'
         @release_date_header = style
         @movies = @movies.order('release_date ASC')
-        #session[:sort => 'title']
       end
     end
   
@@ -61,6 +74,6 @@ class MoviesController < ApplicationController
     # Making "internal" methods private is not required, but is a common practice.
     # This helps make clear which methods respond to requests, and which ones do not.
     def movie_params
-      params.require(:movie).permit(:title, :rating, :description, :release_date, :sort)
+      params.require(:movie).permit(:title, :rating, :description, :release_date)
     end
   end
